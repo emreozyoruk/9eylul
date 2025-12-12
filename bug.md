@@ -78,15 +78,15 @@
 
 ---
 
-## BUG #7 - Alt Text Eksik (Accessibility Bug)
+## BUG #7 - Placeholder Yapısı Hatalı (Semantic/Accessibility Bug)
 
 | Alan | Detay |
 |------|-------|
-| **Başlık** | Kampüs görselinde alt text yok |
-| **Açıklama** | Hakkımızda bölümündeki görselde `alt` attribute'u eksik. Bu, ekran okuyucu kullanan engelli kullanıcılar için erişilebilirlik problemi yaratıyor. |
-| **Konum** | `src/App.jsx`, satır ~168-171 |
+| **Başlık** | Kampüs görseli için semantik yapı hatalı |
+| **Açıklama** | Hakkımızda bölümündeki "Kampüs Görünümü" placeholder'ı `<div>` ile yapılmış ancak gerçek bir görsel (`<img>`) kullanılması gerekiyor. Ayrıca mevcut yapıda `alt` attribute veya `aria-label` gibi accessibility özellikleri eksik. |
+| **Konum** | `src/App.jsx`, satır ~168-172 |
 | **Severity** | Medium |
-| **Çözüm** | `<img src="..." />` → `<img src="..." alt="9 Eylül Üniversitesi Kampüs Görünümü" />` |
+| **Çözüm** | Gerçek bir görsel eklenip `alt` attribute'u ile birlikte kullanılmalı veya `role="img"` ve `aria-label` eklenmelidir |
 
 ---
 

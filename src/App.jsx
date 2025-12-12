@@ -180,10 +180,10 @@ function App() {
             </div>
             <div className="about-image">
               {/* BUG #7: Alt text eksik (accessibility hatası) */}
-              <img 
-                src="https://via.placeholder.com/400x300?text=Kampus" 
-                className="campus-image"
-              />
+              <div className="image-placeholder">
+                <span>🏛️</span>
+                <p>Kampüs Görünümü</p>
+              </div>
             </div>
           </div>
         </div>
