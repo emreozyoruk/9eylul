@@ -37,6 +37,25 @@ body {
   min-height: 100vh;
 }
 
+/* Dark Mode - BUG #9 ile ilgili - class düzgün uygulanmadığı için çalışmaz */
+body.dark-mode {
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
+.app.dark {
+  background: #1a1a2e;
+}
+
+.app.dark .about,
+.app.dark .announcements {
+  background: #2d2d44;
+}
+
+.app.dark .section-title {
+  color: #ffffff;
+}
+
 /* ==================== NAVBAR ==================== */
 .navbar {
   position: fixed;
@@ -104,6 +123,21 @@ body {
 
 .nav-links a:hover::after {
   width: 100%;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* ==================== HERO SECTION ==================== */
@@ -286,9 +320,21 @@ body {
   line-height: 1.8;
 }
 
+.contact-quick {
+  font-weight: 600;
+  color: var(--primary-red) !important;
+}
+
 .about-image {
   display: flex;
   justify-content: center;
+}
+
+.campus-image {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-medium);
 }
 
 .image-placeholder {
@@ -478,6 +524,16 @@ body {
   color: rgba(255, 255, 255, 0.8);
 }
 
+.email-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.email-link:hover {
+  color: var(--secondary-gold);
+}
+
 .contact-form {
   background: rgba(255, 255, 255, 0.05);
   padding: 2.5rem;
@@ -519,6 +575,21 @@ body {
   outline: none;
   border-color: var(--secondary-gold);
   background: rgba(255, 255, 255, 0.15);
+}
+
+/* Validation Hint */
+.validation-hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.validation-hint.valid {
+  color: #81c784;
+}
+
+.validation-hint.invalid {
+  color: #e57373;
 }
 
 .submit-button {

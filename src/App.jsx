@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
@@ -10,6 +10,14 @@ function App() {
     message: ''
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
+  // BUG #11: News count state hiç güncellenmemiş, her zaman 0 gösteriyor
+  const [newsCount, setNewsCount] = useState(0)
+
+  // BUG #9: useEffect dependency array yanlış - darkMode yerine boş array
+  useEffect(() => {
+    document.body.className = darkMode ? 'dark-mode' : ''
+  }, []) // Boş array olduğu için darkMode değişse bile body class güncellenmez
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -19,7 +27,7 @@ function App() {
     }))
   }
 
-  // BUG #2: Form submit fonksiyonu çağrılmıyor çünkü button type="button" ve onClick yok
+  // BUG #2: Form submit fonksiyonu çağrılmıyor çünkü button type="button"
   const handleSubmit = (e) => {
     e.preventDefault()
     if (formData.name && formData.email && formData.message) {
@@ -31,6 +39,12 @@ function App() {
   const incrementVisitor = () => {
     // BUG #4: Burada + yerine - kullanılmış
     setVisitorCount(prev => prev - 1)
+  }
+
+  // BUG #10: Email validation regex yanlış - @ işaretinden sonra nokta kontrolü yok
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+$/ // Doğrusu: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return regex.test(email)
   }
 
   const announcements = [
@@ -59,11 +73,15 @@ function App() {
     { id: 1, name: "Bilgisayar Mühendisliği", students: 450, icon: "💻" },
     { id: 2, name: "Yazılım Mühendisliği", students: 380, icon: "🖥️" },
     { id: 3, name: "Bilişim Sistemleri", students: 220, icon: "🌐" },
-    { id: 4, name: "Yapay Zeka ve Veri Bilimi", students: 180, icon: "🤖" }
+    // BUG #12: Öğrenci sayısı negatif (mantıksal hata)
+    { id: 4, name: "Yapay Zeka ve Veri Bilimi", students: -180, icon: "🤖" }
   ]
 
+  // BUG #13: Toplam öğrenci hesaplaması yanlış - reduce yerine sadece ilk elemanı alıyor
+  const totalStudents = programs[0].students // Doğrusu: programs.reduce((sum, p) => sum + p.students, 0)
+
   return (
-    <div className="app">
+    <div className={`app ${darkMode ? 'dark' : ''}`}>
       {/* Navbar */}
       <nav className="navbar">
         <div className="nav-brand">
@@ -78,6 +96,14 @@ function App() {
           <li><a href="#duyurular">Duyurular</a></li>
           <li><a href="#iletisim">İletişim</a></li>
         </ul>
+        {/* BUG #6: Dark mode toggle onclick yerine onMouseOver kullanılmış */}
+        <button 
+          className="theme-toggle" 
+          onMouseOver={() => setDarkMode(!darkMode)}
+          title="Tema Değiştir"
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
       </nav>
 
       {/* Hero Section */}
@@ -92,16 +118,18 @@ function App() {
           </p>
           <div className="hero-stats">
             <div className="stat-item">
-              <span className="stat-number">25,000+</span>
-              <span className="stat-label">Öğrenci</span>
+              {/* BUG #13: Toplam öğrenci sayısı yanlış hesaplanıyor */}
+              <span className="stat-number">{totalStudents}</span>
+              <span className="stat-label">Toplam Öğrenci</span>
             </div>
             <div className="stat-item">
               <span className="stat-number">12</span>
               <span className="stat-label">Fakülte</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">150+</span>
-              <span className="stat-label">Program</span>
+              {/* BUG #11: News count her zaman 0 gösteriyor */}
+              <span className="stat-number">{newsCount}</span>
+              <span className="stat-label">Duyuru</span>
             </div>
           </div>
           <button className="cta-button" onClick={incrementVisitor}>
@@ -132,12 +160,17 @@ function App() {
                 bu workshop ile öğrencilerimize sektörde çok değerli olan 
                 bug hunting yeteneklerini kazandırmayı hedefliyoruz.
               </p>
+              {/* BUG #14: Telefon numarası tıklanabilir link olmalı ama düz metin */}
+              <p className="contact-quick">
+                📞 Hızlı İletişim: 0232 301 00 00
+              </p>
             </div>
             <div className="about-image">
-              <div className="image-placeholder">
-                <span>🏛️</span>
-                <p>Kampüs Görünümü</p>
-              </div>
+              {/* BUG #7: Alt text eksik (accessibility hatası) */}
+              <img 
+                src="https://via.placeholder.com/400x300?text=Kampus" 
+                className="campus-image"
+              />
             </div>
           </div>
         </div>
@@ -152,6 +185,7 @@ function App() {
               <div key={program.id} className="program-card">
                 <span className="program-icon">{program.icon}</span>
                 <h3>{program.name}</h3>
+                {/* BUG #12: Negatif öğrenci sayısı gösteriliyor */}
                 <p>{program.students} Öğrenci</p>
                 <button className="program-button">Detaylar</button>
               </div>
@@ -173,6 +207,7 @@ function App() {
                 </div>
                 <h3>{announcement.title}</h3>
                 <p>{announcement.description}</p>
+                {/* BUG #8: Link href="#" kullanılmış, gerçek sayfa yok + yeni sekmede açılmıyor */}
                 <a href="#" className="read-more">Devamını Oku →</a>
               </div>
             ))}
@@ -204,7 +239,8 @@ function App() {
                 <span className="info-icon">✉️</span>
                 <div>
                   <h4>E-posta</h4>
-                  <p>info@deu.edu.tr</p>
+                  {/* BUG #15: Email linki mailto: protokolü eksik */}
+                  <a href="info@deu.edu.tr" className="email-link">info@deu.edu.tr</a>
                 </div>
               </div>
             </div>
@@ -238,6 +274,12 @@ function App() {
                   placeholder="E-posta adresinizi giriniz"
                   required
                 />
+                {/* BUG #10: Email validation göstergesi - yanlış regex kullanıyor */}
+                {formData.email && (
+                  <span className={`validation-hint ${validateEmail(formData.email) ? 'valid' : 'invalid'}`}>
+                    {validateEmail(formData.email) ? '✓ Geçerli email' : '✗ Geçersiz email'}
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="message">Mesajınız</label>
@@ -280,7 +322,8 @@ function App() {
             <a href="#" className="social-icon">💼</a>
           </div>
           <p className="footer-copyright">
-            © 2025 9 Eylül Üniversitesi - QA Workshop Bug Hunting Challenge
+            {/* Doğru yıl gösterimi için Date kullanılmalı ama hardcoded 2024 yazılmış */}
+            © 2024 9 Eylül Üniversitesi - QA Workshop Bug Hunting Challenge
           </p>
         </div>
       </footer>
