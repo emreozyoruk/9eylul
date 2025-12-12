@@ -11,6 +11,7 @@ function App() {
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   // BUG #11: News count state hiç güncellenmemiş, her zaman 0 gösteriyor
   const [newsCount, setNewsCount] = useState(0)
 
@@ -88,13 +89,25 @@ function App() {
           <span className="brand-icon">🎓</span>
           <span className="brand-text">9 Eylül Üniversitesi</span>
         </div>
-        <ul className="nav-links">
-          <li><a href="#anasayfa">Ana Sayfa</a></li>
-          <li><a href="#hakkimizda">Hakkımızda</a></li>
+        
+        {/* Hamburger Menu Button - Mobile */}
+        <button 
+          className="hamburger-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Menüyü Aç/Kapat"
+        >
+          <span className={`hamburger-line ${mobileMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${mobileMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${mobileMenuOpen ? 'open' : ''}`}></span>
+        </button>
+
+        <ul className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          <li><a href="#anasayfa" onClick={() => setMobileMenuOpen(false)}>Ana Sayfa</a></li>
+          <li><a href="#hakkimizda" onClick={() => setMobileMenuOpen(false)}>Hakkımızda</a></li>
           {/* BUG #1: Programlar linki yanlış yere yönlendiriyor (#iletisim yerine #programlar olmalı) */}
-          <li><a href="#iletisim">Programlar</a></li>
-          <li><a href="#duyurular">Duyurular</a></li>
-          <li><a href="#iletisim">İletişim</a></li>
+          <li><a href="#iletisim" onClick={() => setMobileMenuOpen(false)}>Programlar</a></li>
+          <li><a href="#duyurular" onClick={() => setMobileMenuOpen(false)}>Duyurular</a></li>
+          <li><a href="#iletisim" onClick={() => setMobileMenuOpen(false)}>İletişim</a></li>
         </ul>
         {/* BUG #6: Dark mode toggle onclick yerine onMouseOver kullanılmış */}
         <button 
